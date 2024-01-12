@@ -3,7 +3,9 @@ import numpy as np
 from utils import *
 from tensorflow.keras.models import load_model
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 def preProcesamiento(img):
     # preprocesamiento de la imagen, se transforma a escala de grises, se le aplica
@@ -13,6 +15,7 @@ def preProcesamiento(img):
     imgBlur = cv2.GaussianBlur(imgGris, (5, 5), 1)
     imgThreshold = cv2.adaptiveThreshold(imgBlur, 255, 1, 1, 11, 2)
     return imgThreshold
+
 
 def biggestContour(contours):
     # escanea todos los contornos en busca del que tenga la mayor area
@@ -35,10 +38,11 @@ def biggestContour(contours):
     # biggest es un array de 4 dimensiones lo que permitira recortal la imagen para acomodarse a dichos puntos
     return biggest, max_area
 
+
 def reorder(myPoints):
     # sirve para ordenar los puntos en el orden correcto
-    myPoints = myPoints.reshape((4,2))
-    myPointsNew = np.zeros((4,1,2), dtype = np.int32)
+    myPoints = myPoints.reshape((4, 2))
+    myPointsNew = np.zeros((4, 1, 2), dtype=np.int32)
     add = myPoints.sum(1)
     myPointsNew[0] = myPoints[np.argmin(add)]
     myPointsNew[3] = myPoints[np.argmax(add)]
@@ -47,10 +51,11 @@ def reorder(myPoints):
     myPointsNew[2] = myPoints[np.argmax(diff)]
     return myPointsNew
 
+
 def splitBoxes(img):
     # la funcion de vsplit divide verticalmente la matriz imagen en nueve partes
     # puesto que nuestro sudoku cuenta con nueve cuadrados
-    rows = np.vsplit(img,9)
+    rows = np.vsplit(img, 9)
     boxes = []
     for r in rows:
         cols = np.hsplit(r, 9)
@@ -59,9 +64,12 @@ def splitBoxes(img):
             boxes.append(box)
     return boxes
 
+
 def initPredictionModel():
-    model = load_model('myModel.h5')
+    path = r"C:\Users\dabac\PycharmProjects\pythonProject\myModel.h5"
+    model = load_model(path)
     return model
+
 
 def getPrediction(boxes, model):
     # utilizando keras para la prediccion de los numeros
@@ -70,11 +78,11 @@ def getPrediction(boxes, model):
         # prepara la imagen
         img = np.array(image)
         img = img[4:img.shape[0] - 4, 4:img.shape[1] - 4]
-        img = cv2.resize(img, (28,28))
-        img = img/255
-        img = img.reshape(1,28,28,1)
+        img = cv2.resize(img, (28, 28))
+        img = img / 255
+        img = img.reshape(1, 28, 28, 1)
         # predice el numero
-        predictions = model.predict(img,verbose=None)
+        predictions = model.predict(img, verbose=None)
         classIndex = np.argmax(predictions, axis=-1)
         probabilityValue = np.amax(predictions)
         # guarda el resultado
