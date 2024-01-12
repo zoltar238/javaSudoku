@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class VisualizadorFoto extends JFrame {
-    BufferedImage img = null;
+    BufferedImage img;
     JLabel label = new JLabel();
     JButton aceptar = new JButton("Aceptar");
     JButton reintentar = new JButton("Retomar");
@@ -59,25 +59,18 @@ public class VisualizadorFoto extends JFrame {
         aceptar.addActionListener((e) -> {
             try {
                 realizaOcr("C:\\Users\\dabac\\Proton Drive\\Protoandrei\\My files\\SudokuSolver\\untitled\\" + (contadorFoto - 1) + "captura.jpeg");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (AWTException ex) {
+            } catch (IOException | AWTException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        cancelar.addActionListener((e) -> {
-            this.dispose();
-        });
+        cancelar.addActionListener((e) -> this.dispose());
         reintentar.addActionListener((e) -> {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    panel.setVisible(true);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
+            EventQueue.invokeLater(() -> {
+                panel.setVisible(true);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
                 }
             });
             detector.capturaTomada = false;

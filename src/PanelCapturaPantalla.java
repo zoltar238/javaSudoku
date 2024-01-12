@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 public class PanelCapturaPantalla extends JFrame{
     Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -27,8 +24,8 @@ public class PanelCapturaPantalla extends JFrame{
         g2.setColor(Color.red);
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         g2.setStroke(new BasicStroke(2));
-        int x[] = {detectorRaton.mousex1, detectorRaton.mousex1, detectorRaton.mousex2, detectorRaton.mousex2};
-        int y[] = {detectorRaton.mousey1, detectorRaton.mousey2, detectorRaton.mousey2, detectorRaton.mousey1};
+        int[] x = {detectorRaton.mousex1, detectorRaton.mousex1, detectorRaton.mousex2, detectorRaton.mousex2};
+        int[] y = {detectorRaton.mousey1, detectorRaton.mousey2, detectorRaton.mousey2, detectorRaton.mousey1};
         g2.drawPolygon(x,y,4);
     }
 }
