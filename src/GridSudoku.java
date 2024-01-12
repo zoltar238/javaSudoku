@@ -1,15 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class GridSudoku extends JPanel{
     JTextField[][] casillasSudoku = new JTextField[9][9];
     int[][] board = new int[9][9];
     int[][] boardVacia = new int[9][9];
-    ArrayList<int[][]> registrosVacios = new ArrayList<int[][]>();
-    ArrayList<int[][]> registrosResueltos = new ArrayList<int[][]>();
 
     GridSudoku() {
         this.setPreferredSize(new Dimension(400, 400));
@@ -89,12 +84,4 @@ public class GridSudoku extends JPanel{
             }
         }
     }
-
-
-    //public void paint(Graphics g){
-    //    super.paint(g);
-    //    Graphics2D g2 = (Graphics2D) g;
-    //    g2.setColor(Color.BLACK);
-    //    g2.setStroke(new BasicStroke(2));
-    //}
 }
