@@ -15,7 +15,8 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
     ArrayList<int[][]> registrosVacios = new ArrayList<>();
     ArrayList<int[][]> registrosSolucionado = new ArrayList<>();
     boolean muestraOriginal = true;
-    PanelCapturaPantalla panelCapturaPantalla = new PanelCapturaPantalla();
+    SelectorImagen selectorImagen = new SelectorImagen(gridSudoku);
+
 
     Ventana() {
         this.setTitle("Resuelve sudokus");
@@ -45,18 +46,7 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
         for (int i = 0; i < botonera.arrayBotones.length; ++i) {
             botonera.arrayBotones[i].addActionListener((e) -> {
                 if (e.getSource() == botonera.tableroResuelve) {
-                    gridSudoku.matrizToGrid();
-                    registrosVacios.add(deepCopy(gridSudoku.board));
-                    gridSudoku.boardVacia = deepCopy(gridSudoku.board);
-                    SudokuSolver.solveBoard(gridSudoku.board);
-                    registrosSolucionado.add(deepCopy(gridSudoku.board));
-                    gridSudoku.gridToMatriz();
-                    panelConSolucionList.add(new PanelConSolucion(registrosVacios.get(conteo), registrosSolucionado.get(conteo)));
-                    panelLateral.frameSudokuHistorico.add(panelConSolucionList.get(conteo));
-                    panelConSolucionList.get(conteo).addMouseListener(this);
-                    panelLateral.revalidate();
-                    panelLateral.repaint();
-                    ++conteo;
+                    resuelveTablero();
                 }
                 if (e.getSource() == botonera.tableroVacia) {
                     gridSudoku.vaciadoTablero();
@@ -66,20 +56,34 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
                     if (muestraOriginal) {
                         gridSudoku.gridToMatrizVacia();
                         muestraOriginal = false;
-                    } else if (!muestraOriginal) {
+                    } else {
                         gridSudoku.gridToMatriz();
                         muestraOriginal = true;
                     }
                 }
 
                 if (e.getSource() == botonera.tableroImagen) {
-                    EventQueue.invokeLater(() -> panelCapturaPantalla.setVisible(true));
-                    panelCapturaPantalla.detectorRaton.capturaTomada = false;
+                    EventQueue.invokeLater(() -> selectorImagen.setVisible(true));
                 }
             });
         }
         this.pack();
         this.setVisible(true);
+    }
+
+    public void resuelveTablero(){
+        gridSudoku.matrizToGrid();
+        registrosVacios.add(deepCopy(gridSudoku.board));
+        gridSudoku.boardVacia = deepCopy(gridSudoku.board);
+        SudokuSolver.solveBoard(gridSudoku.board);
+        registrosSolucionado.add(deepCopy(gridSudoku.board));
+        gridSudoku.gridToMatriz();
+        panelConSolucionList.add(new PanelConSolucion(registrosVacios.get(conteo), registrosSolucionado.get(conteo)));
+        panelLateral.frameSudokuHistorico.add(panelConSolucionList.get(conteo));
+        panelConSolucionList.get(conteo).addMouseListener(this);
+        panelLateral.revalidate();
+        panelLateral.repaint();
+        ++conteo;
     }
 
     public void startControlThread() {
@@ -92,22 +96,19 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
         while (threadControl != null) {
             gridSudoku.compruebaEstadoTexto();
             gridSudoku.repaint();
-            panelCapturaPantalla.repaint();
-            if (panelCapturaPantalla.detectorRaton.capturaTomada) {
-                panelCapturaPantalla.dispose();
-            }
+            selectorImagen.panelCapturaPantalla.repaint();
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        for (int i = 0; i < panelConSolucionList.size(); ++i) {
-            if (e.getSource() == panelConSolucionList.get(i)) {
-                gridSudoku.board = deepCopy(panelConSolucionList.get(i).boardSolucion);
-                gridSudoku.boardVacia = deepCopy(panelConSolucionList.get(i).boardVacia);
+        for (PanelConSolucion panelConSolucion : panelConSolucionList) {
+            if (e.getSource() == panelConSolucion) {
+                gridSudoku.board = deepCopy(panelConSolucion.boardSolucion);
+                gridSudoku.boardVacia = deepCopy(panelConSolucion.boardVacia);
             }
         }
-        gridSudoku.gridToMatriz();
+        EventQueue.invokeLater(() -> gridSudoku.gridToMatriz());
     }
 
     @Override
@@ -122,18 +123,18 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        for (int i = 0; i < panelConSolucionList.size(); ++i) {
-            if (e.getSource() == panelConSolucionList.get(i)) {
-                panelConSolucionList.get(i).setBackground(Color.GRAY);
+        for (PanelConSolucion panelConSolucion : panelConSolucionList) {
+            if (e.getSource() == panelConSolucion) {
+                panelConSolucion.setBackground(Color.GRAY);
             }
         }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        for (int i = 0; i < panelConSolucionList.size(); ++i) {
-            if (e.getSource() == panelConSolucionList.get(i)) {
-                panelConSolucionList.get(i).setBackground(Color.WHITE);
+        for (PanelConSolucion panelConSolucion : panelConSolucionList) {
+            if (e.getSource() == panelConSolucion) {
+                panelConSolucion.setBackground(Color.WHITE);
             }
         }
     }
@@ -141,9 +142,7 @@ public class Ventana extends JFrame implements Runnable, MouseListener {
     public static int[][] deepCopy(int[][] original) {
         int[][] copy = new int[9][9];
         for (int i = 0; i < original.length; ++i) {
-            for (int j = 0; j < original[i].length; ++j) {
-                copy[i][j] = original[i][j];
-            }
+            System.arraycopy(original[i], 0, copy[i], 0, original[i].length);
         }
         return copy;
     }

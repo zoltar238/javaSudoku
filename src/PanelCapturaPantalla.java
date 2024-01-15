@@ -3,8 +3,10 @@ import java.awt.*;
 
 public class PanelCapturaPantalla extends JFrame{
     Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-    DeteccionRatonCapturador detectorRaton = new DeteccionRatonCapturador(this);
-    PanelCapturaPantalla(){
+    GridSudoku gridSudoku;
+    DeteccionRatonCapturador detectorRaton;
+    PanelCapturaPantalla(GridSudoku gridSudoku){
+        this.gridSudoku = gridSudoku;
         this.setTitle("Capturador de pantalla");
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -13,9 +15,10 @@ public class PanelCapturaPantalla extends JFrame{
         this.setBackground(Color.black);
         this.setOpacity(0.1f);
         this.setLayout(new GridBagLayout());
+        this.setVisible(false);
+        detectorRaton = new DeteccionRatonCapturador(this, gridSudoku);
         this.addMouseListener(detectorRaton);
         this.addMouseMotionListener(detectorRaton);
-        this.setVisible(false);
     }
 
     public void paint(Graphics g){

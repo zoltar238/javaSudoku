@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class GridSudoku extends JPanel{
     JTextField[][] casillasSudoku = new JTextField[9][9];
@@ -26,13 +27,13 @@ public class GridSudoku extends JPanel{
 
     public void compruebaEstadoTexto() {
         String valoresValidos = "1234567890";
-        for (int i = 0; i < casillasSudoku.length; ++i) {
-            for (int z = 0; z < casillasSudoku[i].length; ++z) {
-                if (casillasSudoku[i][z].getText().length() > 1) {
-                    casillasSudoku[i][z].setText(casillasSudoku[i][z].getText().substring(0, casillasSudoku[i][z].getText().length() - 1));
+        for (JTextField[] jTextFields : casillasSudoku) {
+            for (JTextField jTextField : jTextFields) {
+                if (jTextField.getText().length() > 1) {
+                    jTextField.setText(jTextField.getText().substring(0, jTextField.getText().length() - 1));
                 }
-                if (!valoresValidos.contains(casillasSudoku[i][z].getText())) {
-                    casillasSudoku[i][z].setText("0");
+                if (!valoresValidos.contains(jTextField.getText())) {
+                    jTextField.setText("0");
                 }
             }
         }
@@ -73,15 +74,13 @@ public class GridSudoku extends JPanel{
     }
 
     public void vaciadoTablero(){
-        for (int i = 0; i < casillasSudoku.length; ++i) {
-            for (int z = 0; z < casillasSudoku[i].length; ++z) {
-                casillasSudoku[i][z].setText(null);
+        for (JTextField[] jTextFields : casillasSudoku) {
+            for (JTextField jTextField : jTextFields) {
+                jTextField.setText(null);
             }
         }
-        for (int i = 0; i < board.length;++i){
-            for (int z = 0; z < board[i].length;++z){
-                board[i][z] = 0;
-            }
+        for (int[] ints : board) {
+            Arrays.fill(ints, 0);
         }
     }
 }

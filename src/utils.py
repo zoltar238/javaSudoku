@@ -66,7 +66,7 @@ def splitBoxes(img):
 
 
 def initPredictionModel():
-    path = r"C:\Users\dabac\PycharmProjects\pythonProject\myModel.h5"
+    path = r"C:\Users\dabac\Proton Drive\Protoandrei\My files\SudokuSolver\untitled\src\myModel.h5"
     model = load_model(path)
     return model
 

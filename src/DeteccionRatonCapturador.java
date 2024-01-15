@@ -10,11 +10,12 @@ import java.io.IOException;
 public class DeteccionRatonCapturador  implements MouseListener, MouseMotionListener{
 
     int mousex1,mousey1,mousex2,mousey2,contadorFoto = 0;
-    boolean capturaTomada = false;
     PanelCapturaPantalla panelCaptura;
+    GridSudoku gridSudoku;
 
-    DeteccionRatonCapturador(PanelCapturaPantalla panelCaptura){
+    DeteccionRatonCapturador(PanelCapturaPantalla panelCaptura, GridSudoku gridSudoku){
         this.panelCaptura = panelCaptura;
+        this.gridSudoku = gridSudoku;
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -87,8 +88,7 @@ public class DeteccionRatonCapturador  implements MouseListener, MouseMotionList
         }
         ImageIO.write(image, "jpeg", new File(contadorFoto + "captura.jpeg"));
         ++contadorFoto;
-        capturaTomada = true;
         mousey2 = mousey1 = mousex1 = mousex2 = 0;
-        new VisualizadorFoto(contadorFoto, panelCaptura, this);
+        new VisualizadorFoto(contadorFoto, panelCaptura, this, gridSudoku);
     }
 }
